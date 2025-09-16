@@ -1,0 +1,10 @@
+.email{
+    height: 100px;
+}
+.nombre{
+    height: 100px;
+}
+.nav-elemnents{
+    display: flex;
+    justify-content: space-between;
+}

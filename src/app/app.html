@@ -1,0 +1,171 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+
+<div class="container" id="main-container" >
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Employee Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse  nav-elemnents" id="navbarNav">
+              <ul class="navbar-nav">
+                  <li class="nav-item" (click)="onOpenModal(null, 'add')">
+                  <a class="nav-link active" aria-current="page" href="#">Add Employee</a>
+                  </li>
+              </ul>
+              <form class="d-flex" role="search" (ngSubmit)="searchEmployees(key.value)">
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                  #key
+                  ngModel
+                  name="searchKey"
+                  (input)="getEmployees()"
+                />
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <div *ngFor="let employee of employees" class="col-md-6 col-xl-3">
+            <div class="card m-b-30">
+                <div class="card-body row">
+                    <div class="col-6">
+                        <a href=""><img src={{employee.imageUrl}} alt="" class="img-fluid rounded-circle w-60"></a>
+                    </div>
+                    <div class="col-6 card-title align-self-center mb-0 nombre">
+                        <h5>{{employee.name}}</h5>
+                        <p class="m-0">{{employee.jobTitle}}</p>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item email"><i class="fa fa-envelope float-right"></i>Email : <a href="#">{{employee.email}}</a></li>
+                    <li class="list-group-item"><i class="fa fa-phone float-right"></i>Phone : {{employee.phone}}</li>
+                </ul>
+                <div class="card-body">
+                    <div class="float-right btn-group btn-group-sm">
+                        <a href="#" class="btn btn-primary tooltips" data-placement="top" data-toggle="tooltip" data-original-title="Edit" (click)="onOpenModal(employee, 'edit')"><i class="fa fa-pencil"></i> </a>
+                        <a href="#" class="btn btn-secondary tooltips" data-placement="top" data-toggle="tooltip" data-original-title="Delete" (click)="onOpenModal(employee, 'delete')"><i class="fa fa-times"></i></a>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+</div>
+
+<!-- Add Modal -->
+ <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form #addForm="ngForm" (ngSubmit)="onAddEmployee(addForm)">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" ngModel name="name" class="form-control" id="nombre" >
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input type="email" ngModel name="email" class="form-control" id="email" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">Nunca compartiremos su correo electrónico con nadie más.</div>
+          </div>
+          <div class="mb-3">
+            <label for="jobTitle" class="form-label">Job</label>
+            <input type="text" ngModel name="jobTitle" class="form-control" id="jobTitle">
+          </div>
+          <div class="mb-3">
+            <label for="imageUrl" class="form-label">Url de imagen de perfil</label>
+            <input type="text" ngModel name="imageUrl" class="form-control" id="imageUrl">
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Telefóno</label>
+            <input type="tel" ngModel name="phone" class="form-control" id="phone">
+          </div>
+          <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+ <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Employee {{editEmployee?.name}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form #editForm="ngForm">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" ngModel={{editEmployee?.name}} name="name" class="form-control" id="nombre" >
+          </div>
+          <input type="hidden" ngModel = {{editEmployee?.id}} name="id" class="form-control" id="name">
+          <input type="hidden" ngModel = {{editEmployee?.employeeCode}} name="userCode" class="form-control" name="userCode">
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input type="email" ngModel={{editEmployee?.email}} name="email" class="form-control" id="email" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">Nunca compartiremos su correo electrónico con nadie más.</div>
+          </div>
+          <div class="mb-3">
+            <label for="jobTitle" class="form-label">Job</label>
+            <input type="text" ngModel="{{editEmployee?.jobTitle}}" name="jobTitle" class="form-control" id="jobTitle">
+          </div>
+          <div class="mb-3">
+            <label for="imageUrl" class="form-label">Url de imagen de perfil</label>
+            <input type="text" ngModel={{editEmployee?.imageUrl}} name="imageUrl" class="form-control" id="imageUrl">
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Telefóno</label>
+            <input type="tel" ngModel={{editEmployee?.phone}} name="phone" class="form-control" id="phone">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button (click)="onUpdateEmployee(editForm.value)" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Delete Model -->
+ 
+ <div class="modal fade" id="deleteEmployeeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Modal</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete employee {{deleteEmployee?.name}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button (click)="onDeleteEmployee(deleteEmployee!.id)" type="button" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notifiacación de no usuarios -->
+<div class="container mt-5">
+  @if (employees.length === 0) {
+    <div class="alert alert-info text-center" role="alert">
+      <h4 class="alert-heading">NO EMPLOYEES!</h4>
+      <p>No Employees were found</p>
+    </div>
+  }
+</div>
